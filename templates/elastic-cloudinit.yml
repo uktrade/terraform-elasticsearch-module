@@ -1,0 +1,71 @@
+#cloud-config
+
+write_files:
+ - encoding: b64
+   path: /etc/cloudwatch_agent.json
+   owner: root:root
+   permissions: '0644'
+   content: |
+    {
+      "metrics": {
+        "aggregation_dimensions": [
+          ["InstanceId"]
+        ],
+        "metrics_collected": {
+          "cpu": {
+            "measurement": [
+              "cpu_usage_idle",
+              "cpu_usage_iowait",
+              "cpu_usage_user",
+              "cpu_usage_system"
+            ],
+            "metrics_collection_interval": 60,
+            "resources": ["*"],
+            "totalcpu": true
+          },
+          "disk": {
+            "measurement": [
+              "used_percent",
+              "inodes_free"
+            ],
+            "metrics_collection_interval": 60,
+            "resources": ["/"]
+          },
+          "diskio": {
+            "measurement": [
+              "io_time"
+            ],
+            "metrics_collection_interval": 60,
+            "resources": ["/"]
+          },
+          "mem": {
+            "measurement": [
+              "mem_used_percent"
+            ],
+            "metrics_collection_interval": 60
+          },
+          "swap": {
+            "measurement": [
+              "swap_used_percent"
+            ],
+            "metrics_collection_interval": 60
+          }
+        }
+      }
+    }
+
+runcmd:
+  - sysctl -w vm.max_map_count=262144
+  - echo "vm.max_map_count=262144" >> /etc/sysctl.conf
+  - sysctl fs.inotify.max_user_watches=65535
+  - mkdir -p /var/elasticsearch/data
+  - chown 1000:0 /var/elasticsearch/data
+  - chmod 755 /var/elasticsearch/data
+  - |
+    curl -O https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
+    rpm -U ./amazon-cloudwatch-agent.rpm
+  - /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/etc/cloudwatch_agent.json -s
+
+bootcmd:
+  - mkdir -p /etc/ecs
+  - echo 'ECS_CLUSTER=${cluster_name}' >> /etc/ecs/ecs.config

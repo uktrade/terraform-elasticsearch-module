@@ -1,0 +1,61 @@
+[
+  {
+    "name": "kibana",
+    "image": "${image}",
+    "essential": true,
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "environment": [
+      {
+        "name": "SERVER_HOST",
+        "value": "0.0.0.0"
+      },
+      {
+        "name": "SSL_CERTIFICATE",
+        "value": "${ssl_cert}"
+      },
+      {
+        "name": "SSL_KEY",
+        "value": "${ssl_key}"
+      },
+      {
+        "name": "ELASTICSEARCH_HOSTS",
+        "value": "${elastic_url}"
+      },
+      {
+        "name": "ELASTICSEARCH_USERNAME",
+        "value": "${elastic_username}"
+      },
+      {
+        "name": "ELASTICSEARCH_PASSWORD",
+        "value": "${elastic_password}"
+      },
+      {
+        "name": "ELASTICSEARCH_SSL_VERIFICATIONMODE",
+        "value": "${verification_mode}"
+      },
+      {
+        "name": "XPACK_SECURITY_ENCRYPTIONKEY",
+        "value": "${encryption_key}"
+      },
+      {
+        "name": "XPACK_REPORTING_ENCRYPTIONKEY",
+        "value": "${encryption_key}"
+      }
+    ],
+    "portMappings": [
+      {
+        "containerPort": 5601,
+        "hostPort": 5601
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${stream_prefix}"
+      }
+    }
+  }
+]
