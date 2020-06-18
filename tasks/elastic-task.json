@@ -35,6 +35,10 @@
     ],
     "environment": [
       {
+        "name": "discovery.seed_hosts",
+        "value": "10.37.105.198,10.37.95.92,10.37.94.40,10.37.69.127,10.37.100.236"
+      },
+      {
         "name": "cluster.name",
         "value": "${cluster_name}"
       },
@@ -68,7 +72,7 @@
       },
       {
         "name": "ES_JAVA_OPTS",
-        "value": "-Xms8g -Xmx8g"
+        "value": "-Xms30g -Xmx30g"
       },
       {
         "name": "ELASTIC_PASSWORD",
