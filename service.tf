@@ -97,9 +97,9 @@ resource "aws_ecs_service" "service" {
   desired_count   = var.task_count
   launch_type     = "EC2"
 
-//  load_balancer {
-//    target_group_arn = aws_lb_target_group.main.arn
-//    container_name   = "elasticsearch"
-//    container_port   = 9200
-//  }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.main.arn
+    container_name   = "elasticsearch"
+    container_port   = 9200
+  }
 }
